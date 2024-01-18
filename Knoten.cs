@@ -98,13 +98,13 @@ class Knoten
         {
             foreach (var item in k)
             {
-                int v = item.getFEZ();
+                int v = item.getFAZ();
                 if (v < lowest) lowest = v;
             }
             return lowest;
         }return 0;
     }
-    private Knoten? NachvolgerKnotenSuchen(List<Knoten> alleKnoten)
+    private Knoten? NachfolgerKnotenSuchen(List<Knoten> alleKnoten)
     {
         foreach (var knoten in alleKnoten)
         {
@@ -118,16 +118,19 @@ class Knoten
 
     private int FEZCalc(){ return FEZ = this.FAZ + this.Dauer;}
     private int SAZCalc(){ return SAZ = this.SEZ - this.Dauer;}
-    private int SEZCalc(){ return SEZ = FAZCalc2(Pre) - this.SAZ; } //neubauen
+    private int SEZCalc(List<Knoten> l){
+        var nachfolger = NachfolgerKnotenSuchen(l); 
+        return SEZ = nachfolger == null ? this.FEZ : nachfolger.FEZ;   
+    } 
     private int GPCalc(){ return GP = this.SEZ - this.FEZ; }
     private int FPCalc(Knoten k){ return FP = k.FAZ - this.FEZ; }
 
     public void LateSetter(List<Knoten> l)
     {
-        this.SEZ = SEZCalc();
+        this.SEZ = SEZCalc(l);
         this.SAZ = SAZCalc();
         this.GP = GPCalc();
-        this.FP = (NachvolgerKnotenSuchen(l) is Knoten nachfolger) ? FPCalc(nachfolger) : 0;
+        this.FP = (NachfolgerKnotenSuchen(l) is Knoten nachfolger) ? FPCalc(nachfolger) : 0;
 
     }
 
