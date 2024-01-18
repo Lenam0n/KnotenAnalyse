@@ -26,15 +26,14 @@ class Knoten
         {
             knotencheck(k);
             this.FAZ = FAZCalc(k);
-            Console.WriteLine(this.FAZ + "anf1" + this.Name);
-
         }
         else
         {
-            Console.WriteLine("UUWUWUUWWU");
-            this.FAZ = 100;
+            this.FAZ = 0;
             ueu();
         }
+
+        this.FEZ = FEZCalc();
     }
 
     // Constructor without the Knoten k parameter
@@ -43,9 +42,6 @@ class Knoten
         this.ID = ID;
         this.Name = Name;
         this.Dauer = Dauer;
-        this.FEZ = FEZCalc();
-        Console.WriteLine(this.FAZ+ "anf2" + this.Name);
-        //Console.WriteLine(this.FEZ + "end");
 
     }
 
@@ -82,7 +78,6 @@ class Knoten
         {
             Pre.Add(knoten);
         }
-
     }
     private void ueu() { Pre = null;}
     private int FAZCalc(List<Knoten>? k = null)
@@ -93,20 +88,60 @@ class Knoten
             int v = item.getFEZ();
             if (v > highest) highest = v;
         }
-
         return highest;
     }
-    private int FEZCalc(){ return FEZ = this.FAZ + this.Dauer;}    
-    public int SAZCalc(){ return SAZ = this.SEZ - this.Dauer;}
-    public int SEZCalc(Knoten k){ return SEZ = k.FAZ - this.SAZ; }
-    public int GPCalc(){ return GP = this.SEZ - this.FEZ; }    
-    public int FPCalc(Knoten k){ return FP = k.FAZ - this.FEZ; }
+
+    private int FAZCalc2(List<Knoten>? k = null)
+    {
+        int lowest = 0;
+        if (k != null)
+        {
+            foreach (var item in k)
+            {
+                int v = item.getFEZ();
+                if (v < lowest) lowest = v;
+            }
+            return lowest;
+        }return 0;
+    }
+    private Knoten? NachvolgerKnotenSuchen(List<Knoten> alleKnoten)
+    {
+        foreach (var knoten in alleKnoten)
+        {
+            if (knoten.Pre != null && knoten.Pre.Contains(this))
+            {
+                return knoten;
+            }
+        }
+        return null;
+    }
+
+    private int FEZCalc(){ return FEZ = this.FAZ + this.Dauer;}
+    private int SAZCalc(){ return SAZ = this.SEZ - this.Dauer;}
+    private int SEZCalc(){ return SEZ = FAZCalc2(Pre) - this.SAZ; } //neubauen
+    private int GPCalc(){ return GP = this.SEZ - this.FEZ; }
+    private int FPCalc(Knoten k){ return FP = k.FAZ - this.FEZ; }
+
+    public void LateSetter(List<Knoten> l)
+    {
+        this.SEZ = SEZCalc();
+        this.SAZ = SAZCalc();
+        this.GP = GPCalc();
+        this.FP = (NachvolgerKnotenSuchen(l) is Knoten nachfolger) ? FPCalc(nachfolger) : 0;
+
+    }
+
+
+
     public void print()
     {
         Console.WriteLine(ID + "," + Name + "," + Dauer + "," + FAZ + "," );
         if(Pre != null)
         {
-            Console.WriteLine(Pre[0].Name);
+            foreach (var item in Pre)
+            {
+                Console.WriteLine(item.Name);
+            }
         }
     }
 }
