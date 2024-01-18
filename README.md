@@ -1,3 +1,2 @@
-FAZ wird nicht richig gespeichert daher wird die Berechnung von fez falsch gerechnet
-SAZ & SEZ fehlen
-GP & FP fehlen
+SAZ & SEZ rechnung nicht richtig mss optimiert werden
+GP & FP wird richtig wenn SAZ richtig ist sollte ich aber nochmal prüfen
