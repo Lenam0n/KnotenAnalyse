@@ -30,7 +30,7 @@ class Knoten
         else
         {
             this.FAZ = 0;
-            ueu();
+            Pre = null;
         }
 
         this.FEZ = FEZCalc();
@@ -45,8 +45,6 @@ class Knoten
 
     }
 
-
-
     //GETTER
 
     public int getID() { return this.ID; }
@@ -60,15 +58,6 @@ class Knoten
     public int getFP() { return this.FP; }
     public List<Knoten>? getPRE() { return this.Pre; }
 
-    //SETTER
-    /*
-    public int setID(){ return this.ID;}
-    public string setName(){ return this.Name;}
-    public int setDauer(){ return this.Dauer;}
-    public int setFAZ(){ return this.FAZ;}
-    public int setFEZ() { return this.FEZ;}
-    */
-
     //FUNKTIONEN
 
     private void knotencheck(List<Knoten> k)
@@ -79,7 +68,7 @@ class Knoten
             Pre.Add(knoten);
         }
     }
-    private void ueu() { Pre = null;}
+    
     private int FAZCalc(List<Knoten>? k = null)
     {
         int highest = 0;
@@ -91,19 +80,7 @@ class Knoten
         return highest;
     }
 
-    private int FAZCalc2(List<Knoten>? k = null)
-    {
-        int lowest = 0;
-        if (k != null)
-        {
-            foreach (var item in k)
-            {
-                int v = item.getFAZ();
-                if (v < lowest) lowest = v;
-            }
-            return lowest;
-        }return 0;
-    }
+
     private Knoten? NachfolgerKnotenSuchen(List<Knoten> alleKnoten)
     {
         foreach (var knoten in alleKnoten)
@@ -118,9 +95,10 @@ class Knoten
 
     private int FEZCalc(){ return FEZ = this.FAZ + this.Dauer;}
     private int SAZCalc(){ return SAZ = this.SEZ - this.Dauer;}
-    private int SEZCalc(List<Knoten> l){
+    private int SEZCalc(List<Knoten> l)
+    {
         var nachfolger = NachfolgerKnotenSuchen(l); 
-        return SEZ = nachfolger == null ? this.FEZ : nachfolger.FEZ;   
+        return SEZ = nachfolger == null ? this.FEZ : FAZCalc2(l);   
     } 
     private int GPCalc(){ return GP = this.SEZ - this.FEZ; }
     private int FPCalc(Knoten k){ return FP = k.FAZ - this.FEZ; }
@@ -134,18 +112,30 @@ class Knoten
 
     }
 
-
-
-    public void print()
+    private int FAZCalc2(List<Knoten>? k = null)
     {
-        Console.WriteLine(ID + "," + Name + "," + Dauer + "," + FAZ + "," );
-        if(Pre != null)
+        List<Knoten>? l = new List<Knoten>();
+        foreach (var knoten in k)
         {
-            foreach (var item in Pre)
+            if (knoten.Pre != null && knoten.Pre.Contains(this))
             {
-                Console.WriteLine(item.Name);
+                l.Add(knoten);
             }
         }
+
+
+        int lowest = 0;
+        if (l != null)
+        {
+            foreach (var item in l)
+            {
+                int v = item.getFEZ();
+                if (v < lowest) lowest = v;
+            }
+            return lowest;
+        }
+        return lowest;
     }
+
 }
 
